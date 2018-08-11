@@ -1,0 +1,59 @@
+import cv2
+
+# cascade classifier object...the face feature to search for a face in your image...
+face_cascade=cv2.CascadeClassifier("haarcascade_frontalface_default.xml") # XML model...
+
+img=cv2.imread("news.jpg") # using greyscale mode: 0, increases the accuracy for identifying a face detection...
+gray_img=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY) # pass original image object (img) and convert from color to grayscale...
+
+# creates an array: [[157  84 379 379]]  with (col) x (row) y coordinates and a rectangle...379 x 379 width and height...
+faces=face_cascade.detectMultiScale(gray_img,  # this object (faces) will detect the coordinates of the upper left corner of the face in the image...
+#  and the width and height of the rectangle defining the face in the image...
+scaleFactor=1.1, # scales the image down with every search scan...the lower the setting the more accuracy...more thorough search...searches for big faces, tiny faces...
+minNeighbors=5) # usually set to 5...how many neighbors to search around the window...
+
+
+for x, y, w, h in faces:       # passing 5 parameters...passing BGR parameter...blue green red plus the width of the rectangle line...
+    img=cv2.rectangle(img, (x,y),(x+w,y+h),(0,255,0),3) # passing upper left coords(x,y) and lower right coords...(x+w,y+h) notice that they are tuples...
+
+
+print(type(faces))
+print(faces)
+
+# show the image...
+                                # 3 times as small as the original resolution...
+resized=cv2.resize(img,(int((img.shape[1]/3)),int(img.shape[0]/3)))  # resize the image to a smaller size without distorting it...by excepting the original shape or resolution...
+
+cv2.imshow("Gray",resized)
+#cv2.imshow("Gray",img)
+#cv2.imshow("Gray",gray_img)
+cv2.waitKey(0) # passing zero milliseconds makes program wait for user to hit any key to close the program...
+cv2.destroyAllWindows()
+
+
+
+
+
+"""
+OUTPUT:
+<class 'numpy.ndarray'>
+[[157  84 379 379]]
+157th column or the X   84th row or the Y   379 x 379 rectangle..  the.
+
+Traceback (most recent call last):
+  File "face_detector.py", line 20, in <module>
+    cv2.waitKey(0) # passing zero milliseconds makes program wait for user to hit any key to close the program...
+KeyboardInterrupt
+
+DUE TO NOT PASSING int((img.shape[1]/3)),int(img.shape[0]/3)) as a tuple...THE FIX: (int((img.shape[1]/3)),int(img.shape[0]/3)))
+Traceback (most recent call last):
+  File "face_detector.py", line 25, in <module>
+    resized=cv2.resize(img,int((img.shape[1]/3)),int(img.shape[0]/3))  # resize the image to a smaller size without distorting it...by excepting the original shape or resolution...
+SystemError: new style getargs format but argument is not a tuple
+
+LAST RUN: two faces detected... in the image "news.jpg"
+[[305 379  84  84] face 1
+ [ 42 220 108 108]]  face 2 ....really a hand...not the guy's face...
+
+
+"""
